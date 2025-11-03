@@ -1,6 +1,6 @@
 #include "OnOffBlock.hh"
 
-OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, char* name) : BasicBlock(id,blok_id,pins,name)
+OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
 {
     this->actual_status="🔴";
     for (int p : this->pins) {

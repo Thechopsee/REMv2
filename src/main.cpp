@@ -1,5 +1,7 @@
 #include <vector>
-#include <ESP8266WiFi.h>
+#include <WiFi.h>
+#include <AsyncTCP.h>
+#include <ESPAsyncWebServer.h>
 
 #include "config/secret.hh"
 #include "objects/GroupBlock.hh"
@@ -8,7 +10,7 @@
 #include "enums/BlockTypeEnum.hh"
 #include "objects/ControllBlocks/OnOffBlock.hh"
 
-WiFiServer server(80);
+AsyncWebServer server(80);
 
 std::vector<GroupBlock*> Groups;
 
@@ -42,44 +44,46 @@ void setup() {
   Serial.println("");
   Serial.println("WiFi connected");
 
-  server.begin();
-  Serial.println("Server started");
-
   Serial.print("URL to connect: ");
   Serial.print("http://");
   Serial.print(WiFi.localIP());
   Serial.println("/");
+
+  server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
+  {
+    if (request->hasParam("name") && request->hasParam("state")) {
+      String name  = request->getParam("name")->value();
+      String state = request->getParam("state")->value();
+
+      for (auto group : Groups) {
+        for (auto block : group->blocks) {
+          OnOffBlock* onoff = static_cast<OnOffBlock*>(block);
+          if (onoff && name.equalsIgnoreCase(onoff->name)) {
+            if (state.equalsIgnoreCase("ON")) {
+              onoff->setPin(true);
+            } else if (state.equalsIgnoreCase("OFF")) {
+              onoff->setPin(false);
+            }
+          }
+        }
+      }
+      request->redirect("/");
+    } else {
+      request->send(400, "text/plain", "Missing parameters: name & state");
+    }
+  });
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
+    AsyncResponseStream *response = request->beginResponseStream("text/html");
+    rd->drawNew(Groups, *response);   
+    request->send(response);
+  });
+
+  server.begin();
+  Serial.println("Async server started");
 }
 
 void loop() {
-  WiFiClient client = server.available();
-  if (!client) 
-  {
-      return;
-  }
   
-  Serial.println("NEW request");
-  
-  String request = client.readStringUntil('r');
-  //ignoring favicon request not pernament solution
-  if (request[5]=='f')
-  {
-      return;  
-  }
-  Serial.println(request);
-  
-  client.flush();
-  for(int i=0;i<Groups.size();i++)
-  {
-    for(int j=0;j<Groups[i]->blocks.size();j++)
-    {
-        Groups[i]->blocks[j]->resolveInput(request);
-    }
-  }
-  rd->drawNew(Groups,client);
-
-  delay(1);
-  Serial.println("Client disonnected");
-  Serial.println("");
 }
 

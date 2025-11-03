@@ -1,19 +1,20 @@
 #pragma once
 
-#include "../objects/BasicBlock.hh"
 #include <vector>
-#include <ESP8266WiFi.h>
+#include <Print.h> 
+
+#include "../objects/BasicBlock.hh"
 #include "../objects/GroupBlock.hh"
 #include "../enums/BlockTypeEnum.hh"
 
 class Renderer
 {
   public:
-    void drawBlock(GroupBlock *bl,WiFiClient client);
-    void drawHeader(WiFiClient client);
-    void drawOLMJS(WiFiClient client);
-    void drawNew(std::vector<GroupBlock *>blocks,WiFiClient client);
+    void drawBlock(GroupBlock *bl,Print &client);
+    void drawHeader(Print &client);
+    void drawOLMJS(Print &client);
+    void drawNew(std::vector<GroupBlock *>blocks,Print &client);
   private:
     
-    void drawSmallBlock(BasicBlock* cb,WiFiClient client,BlockTypeEnum type);
+    void drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type);
 };

@@ -1,6 +1,6 @@
 #include "Renderer.hh"
 #include <string>
-void Renderer::drawBlock(GroupBlock *bl,WiFiClient client)
+void Renderer::drawBlock(GroupBlock *bl,Print &client)
 {
   if(bl->type==controll || bl->type==status)
   {
@@ -16,7 +16,7 @@ void Renderer::drawBlock(GroupBlock *bl,WiFiClient client)
   
 }
 
-void Renderer::drawSmallBlock(BasicBlock* cb,WiFiClient client,BlockTypeEnum type)
+void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
 {
   if(type==controll)
   {
@@ -28,11 +28,13 @@ void Renderer::drawSmallBlock(BasicBlock* cb,WiFiClient client,BlockTypeEnum typ
     status.append(cb->actual_status);
     status.append("</div></div>");
     client.println(status.c_str());
-    std::string buttons="<div class=\"button-line\"><a href=\"";
+    std::string buttons="<div class=\"button-line\">"
+                        "<a href=\"/control?name=";
     buttons.append(cb->name);
-    buttons.append("=ON\"><button class=\"on\">On</button></a><a href=\"");
+    buttons.append("&state=ON\"><button class=\"on\">On</button></a>"
+                   "<a href=\"/control?name=");
     buttons.append(cb->name);
-    buttons.append("=OFF\"><button class=\"off\">Off</button></a></div>");
+    buttons.append("&state=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println(buttons.c_str()); 
     //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println("</div>");
@@ -54,7 +56,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,WiFiClient client,BlockTypeEnum typ
 }
 
 
-void Renderer::drawHeader(WiFiClient client)
+void Renderer::drawHeader(Print &client)
 {
   client.println("HTTP/1.1 200 OK");
   client.println("Content-Type: text/html");
@@ -76,7 +78,7 @@ void Renderer::drawHeader(WiFiClient client)
   client.println("<div class=\"container\">");
 }
 
-void Renderer::drawOLMJS(WiFiClient client)
+void Renderer::drawOLMJS(Print &client)
 {
   client.println("<script type=\"text/javascript\">");
   client.println("function start(){var map = new ol.Map({target: \"map\",layers: [new ol.layer.Tile({source: new ol.source.OSM()})],view: new ol.View({center: ol.proj.fromLonLat([18.610968,49.754749]),zoom:17 })});");
@@ -90,7 +92,7 @@ void Renderer::drawOLMJS(WiFiClient client)
 }
 
 
-void Renderer::drawNew(std::vector<GroupBlock*>blocks,WiFiClient client)
+void Renderer::drawNew(std::vector<GroupBlock*>blocks,Print &client)
 {   
     client.println("HTTP/1.1 200 OK");
     client.println("Content-Type: text/html");
