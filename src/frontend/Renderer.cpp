@@ -94,9 +94,6 @@ void Renderer::drawOLMJS(Print &client)
 
 void Renderer::drawNew(std::vector<GroupBlock*>blocks,Print &client)
 {   
-    client.println("HTTP/1.1 200 OK");
-    client.println("Content-Type: text/html");
-    client.println(""); 
     client.println("<!DOCTYPE HTML>");
     client.println("<html>");
     ///////////////////////////head////////////////
@@ -104,7 +101,7 @@ void Renderer::drawNew(std::vector<GroupBlock*>blocks,Print &client)
 
     client.println("<meta charset=\"UTF-8\">");
     client.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">");
-    client.println("<meta http-equiv=\"refresh\" content=\"10\">");
+    //client.println("<meta http-equiv=\"refresh\" content=\"10\">");
     client.println("<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/css/ol.css\" type=\"text/css\">");
     client.println("<link rel=\"stylesheet\" href=\"https://raw.githack.com/Thechopsee/REM-Boat/main/style.css\" type=\"text/css\">");
     client.println("<script src=\"https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/build/ol.js\"></script>");

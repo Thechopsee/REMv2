@@ -18,6 +18,7 @@ Renderer *rd;
 
 void setup() {
   Serial.begin(9600);
+  pinMode(2, OUTPUT);
   delay(10);
   rd=new Renderer();
 
