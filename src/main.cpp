@@ -9,10 +9,13 @@
 #include "frontend/Renderer.hh"
 #include "enums/BlockTypeEnum.hh"
 #include "objects/ControllBlocks/OnOffBlock.hh"
+#include "objects/SensorBlocks/TextSensorBlock.hh"
+#include "sensors/Sensor.hh"
 
 AsyncWebServer server(80);
 
 std::vector<GroupBlock*> Groups;
+std::vector<Sensor> Sensors;
 
 Renderer *rd;
 
@@ -29,6 +32,10 @@ void setup() {
   Groups.push_back(new GroupBlock(1,controll));
   Groups.back()->blocks.push_back(new OnOffBlock(1, 0, {12},"Cabin"));
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
+  Groups.push_back(new GroupBlock(2,status));
+  Sensor* tempSensor=new Sensor("Temp",[]() {return analogRead(34); },1000);
+  Sensors.push_back(*tempSensor);
+  Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Temp",tempSensor));
 
   Serial.println();
   Serial.print("Connecting to ");

@@ -41,6 +41,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
   }
   else
   {
+    cb->update();
     client.println("<div class=\"status-box\">");
     std::string namee="<div class=\"textC\">";
     namee.append(cb->name);
