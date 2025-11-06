@@ -33,9 +33,9 @@ void setup() {
   Groups.back()->blocks.push_back(new OnOffBlock(1, 0, {12},"Cabin"));
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
   Groups.push_back(new GroupBlock(2,status));
-  Sensor* tempSensor=new Sensor("Temp",[]() {return analogRead(34); },1000);
-  Sensors.push_back(*tempSensor);
-  Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Temp",tempSensor));
+  Sensor* movementSensor=new MPU6050Sensor("Movement",1000,21,22);
+  Sensors.push_back(*movementSensor);
+  Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Movement",movementSensor));
 
   Serial.println();
   Serial.print("Connecting to ");
@@ -87,11 +87,20 @@ void setup() {
     request->send(response);
   });
 
+  for (auto sensor: Sensors) {
+    sensor.Begin();
+  }
+  
   server.begin();
   Serial.println("Async server started");
 }
 
-void loop() {
-  
+void loop() 
+{
+  for (auto sensor: Sensors) 
+  {
+    sensor.ReadValue();
+  }
+  sleep(100);
 }
 

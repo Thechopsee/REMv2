@@ -1,9 +1,10 @@
 class Sensor {
 public:
-  Sensor(String name, std::function<float(void)> readValue, unsigned long updateInterval);
+  Sensor(String name, unsigned long updateInterval);
   String name;
-  std::function<float(void)> readValue;
-  float lastValue;
+  String lastValue;
   unsigned long lastUpdate;
   unsigned long updateInterval;
+  virtual void ReadValue();
+  virtual void Begin();
 };
