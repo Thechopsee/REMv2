@@ -13,11 +13,6 @@ void BasicBlock::setPin(bool dat)
   return;
 }
 
-void BasicBlock::update()
-{
-  return;
-}
-
 void BasicBlock::resolveInput(String request)
 {
   return;

@@ -7,12 +7,12 @@
 class TextSensorBlock: public BasicBlock
 {
   public:
-    String current_value;
+    std::string current_value;
     Sensor* sensor;
     TextSensorBlock(int id, int blok_id, const std::vector<int>& pins, const char* name,Sensor* sensor);
     void setPin(bool dat);
     void resolveInput(String request);
-    void update();
-    String getValue();
+    void update() override;
+    std::string getValue();
     
 };

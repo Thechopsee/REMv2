@@ -1,10 +1,13 @@
+#pragma once
+#include "Arduino.h"
+
 class Sensor {
 public:
-  Sensor(String name, unsigned long updateInterval);
-  String name;
-  String lastValue;
+  Sensor(std::string name, unsigned long updateInterval);
+  std::string name;
+  std::string lastValue;
   unsigned long lastUpdate;
   unsigned long updateInterval;
-  virtual void ReadValue();
-  virtual void Begin();
+  virtual void Begin() = 0;   
+  virtual void ReadValue() = 0; 
 };

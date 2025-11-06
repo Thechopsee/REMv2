@@ -15,6 +15,6 @@ class BasicBlock
 
     BasicBlock(int id, int blok_id, const std::vector<int>& pins, const char* name);
     virtual void setPin(bool dat);
-    virtual void update();
+    virtual void update() = 0;
     virtual void resolveInput(String request);
 };

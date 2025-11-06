@@ -13,9 +13,10 @@ void TextSensorBlock::resolveInput(String request) {
 }
 
 void TextSensorBlock::update() {
+    this->actual_status = this->sensor->lastValue;
     this->current_value = this->sensor->lastValue;
 }
 
-String TextSensorBlock::getValue() {
+std::string TextSensorBlock::getValue() {
     return this->current_value;
 }

@@ -11,11 +11,12 @@
 #include "objects/ControllBlocks/OnOffBlock.hh"
 #include "objects/SensorBlocks/TextSensorBlock.hh"
 #include "sensors/Sensor.hh"
+#include "sensors/MPU6050Sensor.hh"
 
 AsyncWebServer server(80);
 
 std::vector<GroupBlock*> Groups;
-std::vector<Sensor> Sensors;
+std::vector<Sensor*> Sensors;
 
 Renderer *rd;
 
@@ -33,8 +34,8 @@ void setup() {
   Groups.back()->blocks.push_back(new OnOffBlock(1, 0, {12},"Cabin"));
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
   Groups.push_back(new GroupBlock(2,status));
-  Sensor* movementSensor=new MPU6050Sensor("Movement",1000,21,22);
-  Sensors.push_back(*movementSensor);
+  Sensor* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
+  Sensors.push_back(movementSensor);
   Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Movement",movementSensor));
 
   Serial.println();
@@ -88,7 +89,7 @@ void setup() {
   });
 
   for (auto sensor: Sensors) {
-    sensor.Begin();
+    sensor->Begin();
   }
   
   server.begin();
@@ -99,8 +100,8 @@ void loop()
 {
   for (auto sensor: Sensors) 
   {
-    sensor.ReadValue();
+    sensor->ReadValue();
   }
-  sleep(100);
+  delay(10);
 }
 
