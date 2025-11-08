@@ -13,6 +13,15 @@ void MPU6050Sensor::Begin() {
   Wire.begin();
   delay(200);
 
+  Serial.println("Scanning I2C bus...");
+  for (byte i = 1; i < 127; i++) {
+    Wire.beginTransmission(i);
+    if (Wire.endTransmission() == 0) {
+      Serial.print("Device found at 0x");
+      Serial.println(i, HEX);
+    }
+  }
+
   _mpu.initialize();
 
   if (!_mpu.testConnection()) {
