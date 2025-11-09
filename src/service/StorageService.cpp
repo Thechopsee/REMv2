@@ -9,23 +9,25 @@ StorageService::StorageService(int chipSelectPin) : csPin(chipSelectPin) {}
 StorageService* StorageService::getInstance(int chipSelectPin) {
     if (!instance) {
         instance = new StorageService(chipSelectPin);
+        instance->begin();
     }
     return instance;
 }
 
 bool StorageService::begin() {
     if (!SD.begin(csPin)) {
-        printf("Chyba: SD karta se nepodařilo inicializovat\n");
+        Serial.println("Unable to start SD SPI! Check wiring");
         return false;
     }
     return true;
 }
 
 bool StorageService::appendToFile(const std::string &name, const std::string &data) {
-    std::string fileName = name + ".txt";
+    std::string fileName = "/" + name + ".txt";
     File file = SD.open(fileName.c_str(), FILE_APPEND);
     if (!file) {
-        printf("Chyba při otevírání souboru: %s\n", fileName.c_str());
+        Serial.println("Opening file error");
+        Serial.println(fileName.c_str());
         return false;
     }
     file.println(data.c_str());
@@ -34,10 +36,11 @@ bool StorageService::appendToFile(const std::string &name, const std::string &da
 }
 
 std::string StorageService::readFile(const std::string &name) {
-    std::string fileName = name + ".txt";
+    std::string fileName = "/" + name + ".txt";
     File file = SD.open(fileName.c_str());
     if (!file) {
-        printf("Chyba: soubor neexistuje: %s\n", fileName.c_str());
+        Serial.println("File doesnt exist");
+        Serial.println(fileName.c_str());
         return "";
     }
 

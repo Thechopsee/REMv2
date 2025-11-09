@@ -1,6 +1,6 @@
 #pragma once
 #include <TinyGPSPlus.h>
-#include "GpsData.h"
+#include "GpsData.hh"
 
 class GpsService {
 private:
@@ -8,8 +8,6 @@ private:
     TinyGPSPlus gps;
     int rxPin, txPin;
     GpsData lastData;
-
-    void handleRoot();
 
 public:
     GpsService(int rx, int tx);

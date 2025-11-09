@@ -2,5 +2,5 @@
 
 enum DisplayTypeEnum
 {
-    ZeroNine128x96
+    ZeroFortyTwo72X40
 };

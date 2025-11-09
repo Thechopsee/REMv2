@@ -1,12 +1,10 @@
-#include "GpsService.h"
+#include "GpsService.hh"
 
 GpsService::GpsService(int rx, int tx)
     : gpsSerial(&Serial1), rxPin(rx), txPin(tx) {}
 
 void GpsService::begin() {
     gpsSerial->begin(9600, SERIAL_8N1, rxPin, txPin);
-    server.on("/", [this]() { handleRoot(); });
-    server.begin();
 }
 
 void GpsService::update() {
@@ -31,7 +29,6 @@ void GpsService::update() {
         }
     }
 
-    server.handleClient();
 }
 
 GpsData GpsService::getData() {

@@ -4,10 +4,12 @@
 #include "DisplayBridgeFactory.hh"
 #include "../enums/DisplayTypeEnum.hh"
 
+
 class UniversalDisplay
 {
     private:
     DisplayBridge* bridge;
     public:
     UniversalDisplay(DisplayTypeEnum display);
+    void drawBitmap(const unsigned char* bitmap);
 };

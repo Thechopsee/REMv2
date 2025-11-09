@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
-#include <U8g2lib.h>
+
 
 #include "config/secret.hh"
 #include "objects/GroupBlock.hh"
@@ -13,18 +13,24 @@
 #include "objects/SensorBlocks/TextSensorBlock.hh"
 #include "sensors/Sensor.hh"
 #include "sensors/MPU6050Sensor.hh"
+#include "service/StorageService.hh"
+
+#include "display/bitmaps/boatBitmap.hh"
+
+#include "display/UniversalDisplay.hh" 
+#include "enums/DisplayTypeEnum.hh"
 
 AsyncWebServer server(80);
 
 std::vector<GroupBlock*> Groups;
 std::vector<Sensor*> Sensors;
+UniversalDisplay* display;
 
-U8G2_SSD1306_96X40_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
+
 
 Renderer *rd;
 
 void setup() {
-  u8g2.begin();
   Serial.begin(9600);
   pinMode(2, OUTPUT);
   delay(10);
@@ -98,25 +104,8 @@ void setup() {
   
   server.begin();
   Serial.println("Async server started");
-
-  u8g2.sendF("c", 0xD3); // Display offset
-  u8g2.sendF("c", 0x00); // Zkus 0x00–0x20 pro doladění
-
-   u8g2.sendF("c", 0x00 + (32 & 0x0F));   // lower nibble
-  u8g2.sendF("c", 0x10 + ((32>> 4) & 0x0F));
-
-  // Text a rám pro kontrolu
-  u8g2.setFont(u8g2_font_6x10_tf);
-  u8g2.drawStr(30, 2, "Hello 0.42 OLED!");
-  u8g2.drawFrame(30, 0, 72, 40);
-
-  int centerX = 66; // 72 / 2
-  int centerY = 20; // 40 / 2
-  int radius = 10;  // velikost kolečka
-
-  u8g2.drawCircle(centerX, centerY, radius, U8G2_DRAW_ALL);
-
-  u8g2.sendBuffer();
+  display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
+  display->drawBitmap(boat);
 }
 
 void loop() 

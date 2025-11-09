@@ -1,12 +1,12 @@
 #include "DisplayBridgeFactory.hh"
-#include "ZeroNine.hh" 
+#include "ZeroFortyTwo.hh" 
 
 DisplayBridge* DisplayBridgeFactory::create(DisplayTypeEnum type)
 {
     switch (type)
     {
-        case ZeroNine128x96:
-            return new ZeroNine();
+        case ZeroFortyTwo72X40:
+            return new ZeroFortyTwo(72,40);
         default:
             return nullptr;
     }
