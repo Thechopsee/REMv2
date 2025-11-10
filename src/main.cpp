@@ -14,6 +14,7 @@
 #include "sensors/Sensor.hh"
 #include "sensors/MPU6050Sensor.hh"
 #include "service/StorageService.hh"
+#include "service/GpsService.hh"
 
 #include "display/bitmaps/boatBitmap.hh"
 
@@ -25,6 +26,7 @@ AsyncWebServer server(80);
 std::vector<GroupBlock*> Groups;
 std::vector<Sensor*> Sensors;
 UniversalDisplay* display;
+GpsService* gpsService;
 
 
 
@@ -32,10 +34,12 @@ Renderer *rd;
 
 void setup() {
   Serial.begin(9600);
+  
   pinMode(2, OUTPUT);
   delay(10);
   rd=new Renderer();
-
+  gpsService=new GpsService(27,26);
+  gpsService->begin();
   Groups.push_back(new GroupBlock(0,controll));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 0, {16,13},"Pozition"));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 1, {14},"Sto"));
@@ -105,7 +109,8 @@ void setup() {
   server.begin();
   Serial.println("Async server started");
   display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
-  display->drawBitmap(boat);
+  display->drawBitmap(boat_45);
+
 }
 
 void loop() 
@@ -113,6 +118,7 @@ void loop()
   for (auto sensor: Sensors) 
   {
     sensor->ReadValue();
+    
   }
   delay(10);
 }
