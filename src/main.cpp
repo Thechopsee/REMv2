@@ -3,7 +3,6 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 
-
 #include "config/secret.hh"
 #include "objects/GroupBlock.hh"
 #include "objects/BasicBlock.hh"
@@ -20,6 +19,8 @@
 
 #include "display/UniversalDisplay.hh" 
 #include "enums/DisplayTypeEnum.hh"
+
+#include "events/DataDrivenEvent.hh"
 
 AsyncWebServer server(80);
 
@@ -40,6 +41,11 @@ void setup() {
   rd=new Renderer();
   gpsService=new GpsService(27,26);
   gpsService->begin();
+
+  display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
+  display->drawBitmap(boat);
+
+
   Groups.push_back(new GroupBlock(0,controll));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 0, {16,13},"Pozition"));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 1, {14},"Sto"));
@@ -50,6 +56,9 @@ void setup() {
   Groups.push_back(new GroupBlock(2,status));
   Sensor* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
   Sensors.push_back(movementSensor);
+  movementSensor->SetOnDataChanged([&](int angle){
+      DataDrivenEvent::OnDataChanged(display, angle);
+  });
   Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Movement",movementSensor));
 
   Serial.println();
@@ -72,6 +81,7 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("/");
 
+  
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
     if (request->hasParam("name") && request->hasParam("state")) {
@@ -108,8 +118,8 @@ void setup() {
   
   server.begin();
   Serial.println("Async server started");
-  display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
-  display->drawBitmap(boat_45);
+
+
 
 }
 
