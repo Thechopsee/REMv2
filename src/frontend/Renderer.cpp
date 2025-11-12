@@ -43,7 +43,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
   {
     cb->update();
     client.println("<div class=\"status-box\">");
-    std::string namee="<div class=\"textC\">";
+    std::string namee="<div class=\"textC\" id=\"status_" + cb->name + "\">";
     namee.append(cb->name);
     client.println(namee.c_str());
     client.println("</div>");
@@ -70,6 +70,30 @@ void Renderer::drawHeader(Print &client)
   client.println("<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/css/ol.css\" type=\"text/css\">");
   client.println("<link rel=\"stylesheet\" href=\"https://raw.githack.com/Thechopsee/REM-Boat/main/style.css\" type=\"text/css\">");
   client.println("<script src=\"https://cdn.jsdelivr.net/gh/openlayers/openlayers.github.io@master/en/v6.15.1/build/ol.js\"></script>");
+  
+  client.println("<script type=\"text/javascript\">");
+  client.println("function updateStatus(name) {");
+  client.println("  fetch(`/status?name=${name}`)");
+  client.println("    .then(response => response.text())");
+  client.println("    .then(text => {");
+  client.println("      const el = document.getElementById(`status_${name}`);");
+  client.println("      if (el) el.innerText = text;");
+  client.println("    })");
+  client.println("    .catch(err => console.error('Error updating status:', err));");
+  client.println("}");
+
+  client.println("function startStatusUpdater() {");
+  client.println("  const blocks = document.querySelectorAll('[id^=\"status_\"]');");
+  client.println("  blocks.forEach(b => {");
+  client.println("    const name = b.id.replace('status_', '');");
+  client.println("    updateStatus(name);");
+  client.println("  });");
+  client.println("}");
+
+  client.println("setInterval(startStatusUpdater, 3000);");
+  client.println("</script>");
+
+  
   client.println("<title>REM-Boat</title>");
   this->drawOLMJS(client);
   client.println("</head>");

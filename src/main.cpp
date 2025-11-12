@@ -38,6 +38,7 @@ void setup() {
   
   pinMode(2, OUTPUT);
   delay(10);
+
   rd=new Renderer();
   gpsService=new GpsService(27,26);
   gpsService->begin();
@@ -56,9 +57,11 @@ void setup() {
   Groups.push_back(new GroupBlock(2,status));
   Sensor* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
   Sensors.push_back(movementSensor);
+
   movementSensor->SetOnDataChanged([&](int angle){
       DataDrivenEvent::OnDataChanged(display, angle);
   });
+
   Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Movement",movementSensor));
 
   Serial.println();
@@ -103,6 +106,29 @@ void setup() {
       request->redirect("/");
     } else {
       request->send(400, "text/plain", "Missing parameters: name & state");
+    }
+  });
+
+  server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request) 
+  {
+    if (!request->hasParam("name")) {
+      request->send(400, "text/plain", "Missing parameter: name");
+      return;
+    }
+
+    String name = request->getParam("name")->value();
+    bool found = false;
+
+    for (auto sensor : Sensors) {
+      if (sensor && name.equalsIgnoreCase(sensor->name)) {
+        request->send(200, "text/plain", sensor->lastValue);
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      request->send(404, "text/plain", "Sensor not found");
     }
   });
 
