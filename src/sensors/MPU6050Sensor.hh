@@ -1,10 +1,10 @@
 #pragma once
-#include <Arduino.h>
 #include <Wire.h>
 #include <MPU6050.h>
 #include "Sensor.hh"
+#include "../common/DataStruct/GyroAcceleratorDataStruct.hh"
 
-class MPU6050Sensor : public Sensor {
+class MPU6050Sensor : public Sensor<GyroAcceleratorDataStruct> {
 public:
   MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin = 21, int sclPin = 22);
   void Begin() override;
