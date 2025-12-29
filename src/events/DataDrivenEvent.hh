@@ -1,5 +1,8 @@
+#pragma once 
+
 #include "../display/UniversalDisplay.hh"
 #include "../display/bitmaps/boatBitmap.hh"
+
 class DataDrivenEvent{
     public:
     static void OnDataChanged(UniversalDisplay* display,int angle)
@@ -25,4 +28,4 @@ class DataDrivenEvent{
             display->drawBitmap(boat_270);
         }
     }
-}
+};

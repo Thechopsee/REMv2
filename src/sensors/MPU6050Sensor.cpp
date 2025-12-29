@@ -1,7 +1,7 @@
 #include "MPU6050Sensor.hh"
 
 MPU6050Sensor::MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin, int sclPin)
-  : Sensor(name, updateInterval),
+  : Sensor<GyroAcceleratorDataStruct>(name, updateInterval),
     _sdaPin(sdaPin),
     _sclPin(sclPin),
     _mpu()
@@ -52,6 +52,7 @@ void MPU6050Sensor::ReadValue() {
     );
 
     lastValue = buf;
+    lastOriginalValue = {ax, ay, az, gx, gy, gz};
     Serial.print("[MPU6050] New Update:");
     Serial.println(lastValue.c_str());
     lastUpdate = millis();

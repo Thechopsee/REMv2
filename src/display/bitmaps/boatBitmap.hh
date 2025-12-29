@@ -1,4 +1,4 @@
-
+#pragma once
 
 #define BOAT_3_WIDTH 72
 #define BOAT_3_HEIGHT 20

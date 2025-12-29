@@ -1,12 +1,15 @@
 #pragma once
 #include "Arduino.h"
 #include <functional>
+#include "common/DataStruct/GyroAcceleratorDataStruct.hh"
 
+template <typename T>
 class Sensor {
 public:
   using OnDataChanged = std::function<void(int)>;
   Sensor(std::string name, unsigned long updateInterval);
   std::string name;
+  T lastOriginalValue;
   std::string lastValue;
   unsigned long lastUpdate;
   unsigned long updateInterval;

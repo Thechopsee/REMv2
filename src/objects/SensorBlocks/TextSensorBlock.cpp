@@ -1,22 +1,26 @@
 #include "TextSensorBlock.hh"
 
-TextSensorBlock::TextSensorBlock(int id, int blok_id,const std::vector<int>& pins, const char* name,Sensor* sensor) : BasicBlock(id,blok_id,pins,name)
+template class TextSensorBlock<GyroAcceleratorDataStruct>;
+
+template <typename T>
+TextSensorBlock<T>::TextSensorBlock(int id, int blok_id,const std::vector<int>& pins, const char* name,Sensor<T>* sensor) : BasicBlock(id,blok_id,pins,name)
 {
     this->sensor=sensor;
 }
-void TextSensorBlock::setPin(bool dat) {
+template <typename T>
+void TextSensorBlock<T>::setPin(bool dat) {
     return;
 }
-
-void TextSensorBlock::resolveInput(String request) {
+template <typename T>
+void TextSensorBlock<T>::resolveInput(String request) {
     return;
 }
-
-void TextSensorBlock::update() {
+template <typename T>
+void TextSensorBlock<T>::update() {
     this->actual_status = this->sensor->lastValue;
     this->current_value = this->sensor->lastValue;
 }
-
-std::string TextSensorBlock::getValue() {
+template <typename T>
+std::string TextSensorBlock<T>::getValue() {
     return this->current_value;
 }

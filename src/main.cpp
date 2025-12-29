@@ -2,6 +2,7 @@
 #include <WiFi.h>
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
+#include <string>
 
 #include "config/secret.hh"
 #include "objects/GroupBlock.hh"
@@ -21,11 +22,12 @@
 #include "enums/DisplayTypeEnum.hh"
 
 #include "events/DataDrivenEvent.hh"
+#include "common/DataStruct/GyroAcceleratorDataStruct.hh"
 
 AsyncWebServer server(80);
 
 std::vector<GroupBlock*> Groups;
-std::vector<Sensor*> Sensors;
+std::vector<Sensor<GyroAcceleratorDataStruct>*> Sensors;
 UniversalDisplay* display;
 GpsService* gpsService;
 
@@ -38,6 +40,7 @@ void setup() {
   
   pinMode(2, OUTPUT);
   delay(10);
+
   rd=new Renderer();
   gpsService=new GpsService(27,26);
   gpsService->begin();
@@ -54,12 +57,14 @@ void setup() {
   Groups.back()->blocks.push_back(new OnOffBlock(1, 0, {12},"Cabin"));
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
   Groups.push_back(new GroupBlock(2,status));
-  Sensor* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
+  Sensor<GyroAcceleratorDataStruct>* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
   Sensors.push_back(movementSensor);
+
   movementSensor->SetOnDataChanged([&](int angle){
       DataDrivenEvent::OnDataChanged(display, angle);
   });
-  Groups.back()->blocks.push_back(new TextSensorBlock(2, 0, {}, "Movement",movementSensor));
+
+  Groups.back()->blocks.push_back(new TextSensorBlock<GyroAcceleratorDataStruct>(2, 0, {}, "Movement",movementSensor));
 
   Serial.println();
   Serial.print("Connecting to ");
@@ -103,6 +108,29 @@ void setup() {
       request->redirect("/");
     } else {
       request->send(400, "text/plain", "Missing parameters: name & state");
+    }
+  });
+
+  server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request) 
+  {
+    if (!request->hasParam("name")) {
+      request->send(400, "text/plain", "Missing parameter: name");
+      return;
+    }
+
+    String name = request->getParam("name")->value();
+    bool found = false;
+
+    for (auto sensor : Sensors) {
+      if (sensor && name.equalsIgnoreCase(sensor->name.c_str())) {
+        request->send(200, "text/plain", sensor->lastValue.c_str());
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      request->send(404, "text/plain", "Sensor not found");
     }
   });
 
