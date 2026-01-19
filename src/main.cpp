@@ -3,8 +3,10 @@
 #include <AsyncTCP.h>
 #include <ESPAsyncWebServer.h>
 #include <string>
+#include <ESPmDNS.h>
 
 #include "config/secret.hh"
+#include "config/env.hh"
 #include "objects/GroupBlock.hh"
 #include "objects/BasicBlock.hh"
 #include "frontend/Renderer.hh"
@@ -85,6 +87,22 @@ void setup() {
   Serial.print("http://");
   Serial.print(WiFi.localIP());
   Serial.println("/");
+
+  if(!MDNS.begin(host))
+  {
+    Serial.println("mDNS init Fail");
+  }
+  else
+  {
+      Serial.println("");
+      Serial.println("mDNS started");
+      Serial.print("URL to connect: ");
+      Serial.print("http://");
+      Serial.print(host);
+      Serial.print(".local");
+      Serial.println("/");
+  }
+
 
   
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
