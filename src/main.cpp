@@ -4,6 +4,7 @@
 #include <ESPAsyncWebServer.h>
 #include <string>
 #include <ESPmDNS.h>
+#include <ElegantOTA.h>
 
 #include "config/secret.hh"
 #include "config/env.hh"
@@ -103,6 +104,8 @@ void setup() {
       Serial.println("/");
   }
 
+  ElegantOTA.begin(&server);
+  Serial.println("OTA Ready on /update");
 
   
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
@@ -176,6 +179,7 @@ void loop()
     sensor->ReadValue();
     
   }
+  ElegantOTA.loop();
   delay(10);
 }
 
