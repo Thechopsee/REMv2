@@ -1,6 +1,6 @@
 #include "Action.hh"
 
-Action::Action() : inProgress(false), taskHandle(nullptr) {}
+Action::Action() : inProgress(false),stopRequested(false), taskHandle(nullptr) {}
 
 Action::~Action() {
     if (taskHandle != nullptr) {
@@ -18,6 +18,7 @@ void Action::TaskEntry(void* param) {
 
 void Action::Run() {
     if (inProgress) return;  
+    stopRequested = false;
     inProgress = true;
 
     xTaskCreatePinnedToCore(
@@ -29,6 +30,14 @@ void Action::Run() {
         &taskHandle,       
         APP_CPU_NUM       
     );
+}
+
+void Action::Stop() {
+    stopRequested = true;
+}
+
+bool Action::StopRequested() const {
+    return stopRequested;
 }
 
 bool Action::GetStatus() {
