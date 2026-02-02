@@ -39,6 +39,27 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println("</div>");
   }
+  else if(type==action)
+  {
+    client.println("<div class=\"action-box\">");
+    std::string namee="<div class=\"textC\">";
+    namee.append(cb->name);
+    client.println(namee.c_str());
+    std::string status= "<div class=\"status-dot\">";
+    status.append(cb->actual_status);
+    status.append("</div></div>");
+    client.println(status.c_str());
+    std::string buttons="<div class=\"button-line\">"
+                        "<a href=\"/action?name=";
+    buttons.append(cb->name);
+    buttons.append("&state=ON\"><button class=\"on\">On</button></a>"
+                   "<a href=\"/action?name=");
+    buttons.append(cb->name);
+    buttons.append("&state=OFF\"><button class=\"off\">Off</button></a></div>");
+    client.println(buttons.c_str()); 
+    //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
+    client.println("</div>");
+  }
   else
   {
     cb->update();

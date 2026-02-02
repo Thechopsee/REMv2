@@ -13,6 +13,7 @@
 #include "frontend/Renderer.hh"
 #include "enums/BlockTypeEnum.hh"
 #include "objects/ControllBlocks/OnOffBlock.hh"
+#include "objects/ControllBlocks/ActionBlock.hh"
 #include "objects/SensorBlocks/TextSensorBlock.hh"
 #include "sensors/Sensor.hh"
 #include "sensors/MPU6050Sensor.hh"
@@ -68,7 +69,8 @@ void setup() {
   });
 
   Groups.back()->blocks.push_back(new TextSensorBlock<GyroAcceleratorDataStruct>(2, 0, {}, "Movement",movementSensor));
-
+  Groups.push_back(new GroupBlock(3,action));
+  Groups.back()->blocks.push_back(new ActionBlock(3, 0, {15},"Action"));
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
