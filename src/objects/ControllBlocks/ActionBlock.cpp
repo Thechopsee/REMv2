@@ -59,7 +59,7 @@ void ActionBlock::resolveInput(String request)
 }
 int ActionBlock::getValue()
 {
-  return this->current_value;
+  return 0;
 }
 
 

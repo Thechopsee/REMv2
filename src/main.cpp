@@ -89,7 +89,7 @@ void setup() {
   Serial.print(WiFi.localIP());
   Serial.println("/");
 
-  if(!MDNS.begin(host))
+  if(!MDNS.begin(HOSTNAME))
   {
     Serial.println("mDNS init Fail");
   }
@@ -99,7 +99,7 @@ void setup() {
       Serial.println("mDNS started");
       Serial.print("URL to connect: ");
       Serial.print("http://");
-      Serial.print(host);
+      Serial.print(HOSTNAME);
       Serial.print(".local");
       Serial.println("/");
   }
