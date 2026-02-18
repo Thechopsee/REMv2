@@ -13,6 +13,7 @@
 #include "frontend/Renderer.hh"
 #include "enums/BlockTypeEnum.hh"
 #include "objects/ControllBlocks/OnOffBlock.hh"
+#include "objects/ControllBlocks/SliderBlock.hh"
 #include "objects/ControllBlocks/ActionBlock.hh"
 #include "objects/SensorBlocks/TextSensorBlock.hh"
 #include "sensors/Sensor.hh"
@@ -57,8 +58,8 @@ void setup() {
   Groups.back()->blocks.push_back(new OnOffBlock(0, 0, {16,13},"Pozition"));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 1, {14},"Sto"));
   //Groups.back()->blocks.push_back(new OnOffBlock(0, 2, 1,"CABINLED"));
-  Groups.push_back(new GroupBlock(1,controll));
-  Groups.back()->blocks.push_back(new OnOffBlock(1, 0, {12},"Cabin"));
+  Groups.push_back(new GroupBlock(1,slider));
+  Groups.back()->blocks.push_back(new SliderBlock(1, 0, {12},"Cabin"));
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
   Groups.push_back(new GroupBlock(2,status));
   Sensor<GyroAcceleratorDataStruct>* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
@@ -112,25 +113,42 @@ void setup() {
   
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
-    if (request->hasParam("name") && request->hasParam("state")) {
+    if (request->hasParam("name")) {
       String name  = request->getParam("name")->value();
-      String state = request->getParam("state")->value();
 
-      for (auto group : Groups) {
-        for (auto block : group->blocks) {
-          OnOffBlock* onoff = static_cast<OnOffBlock*>(block);
-          if (onoff && name.equalsIgnoreCase(onoff->name)) {
-            if (state.equalsIgnoreCase("ON")) {
-              onoff->setPin(true);
-            } else if (state.equalsIgnoreCase("OFF")) {
-              onoff->setPin(false);
+      if (request->hasParam("state")) {
+        String state = request->getParam("state")->value();
+
+        for (auto group : Groups) {
+          for (auto block : group->blocks) {
+            if (group->type == controll) {
+              OnOffBlock* onoff = static_cast<OnOffBlock*>(block);
+              if (onoff && name.equalsIgnoreCase(onoff->name)) {
+                if (state.equalsIgnoreCase("ON")) {
+                  onoff->setPin(true);
+                } else if (state.equalsIgnoreCase("OFF")) {
+                  onoff->setPin(false);
+                }
+              }
+            }
+          }
+        }
+      } else if (request->hasParam("value")) {
+        int value = request->getParam("value")->value().toInt();
+        for (auto group : Groups) {
+          if (group->type == slider) {
+            for (auto block : group->blocks) {
+              if (name.equalsIgnoreCase(block->name)) {
+                SliderBlock* sb = static_cast<SliderBlock*>(block);
+                if (sb) sb->setValue(value);
+              }
             }
           }
         }
       }
       request->redirect("/");
     } else {
-      request->send(400, "text/plain", "Missing parameters: name & state");
+      request->send(400, "text/plain", "Missing parameters");
     }
   });
 

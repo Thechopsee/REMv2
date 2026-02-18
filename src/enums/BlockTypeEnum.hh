@@ -6,5 +6,6 @@ controll,
 nav,
 status,
 action,
-virt
+virt,
+slider
 };
