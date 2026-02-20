@@ -2,7 +2,7 @@
 #include <string>
 void Renderer::drawBlock(GroupBlock *bl,Print &client)
 {
-  if(bl->type==controll || bl->type==status)
+  if(bl->type==controll || bl->type==status || bl->type==slider)
   {
     client.println("<div class=\"Box\">");
     client.println("<div class=\"fake-border\">");
@@ -58,6 +58,28 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     buttons.append("&state=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println(buttons.c_str()); 
     //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
+    client.println("</div>");
+  }
+  else if(type==slider)
+  {
+    client.println("<div class=\"controll-box\">");
+    std::string namee="<div class=\"textC\">";
+    namee.append(cb->name);
+    client.println(namee.c_str());
+    std::string status= "<div class=\"status-dot\">";
+    status.append(cb->actual_status);
+    status.append("%</div></div>");
+    client.println(status.c_str());
+
+    std::string slider="<div class=\"button-line\">"
+                       "<input type=\"range\" min=\"0\" max=\"100\" value=\"";
+    slider.append(cb->actual_status);
+    slider.append("\" class=\"slider\" id=\"");
+    slider.append(cb->name);
+    slider.append("\" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
+    slider.append("onchange=\"fetch('/control?name=' + this.id + '&value=' + this.value)\">"
+                   "</div>");
+    client.println(slider.c_str());
     client.println("</div>");
   }
   else
