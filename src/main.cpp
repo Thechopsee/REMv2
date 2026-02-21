@@ -15,6 +15,7 @@
 #include "objects/ControllBlocks/OnOffBlock.hh"
 #include "objects/ControllBlocks/SliderBlock.hh"
 #include "objects/ControllBlocks/ActionBlock.hh"
+#include "objects/ControllBlocks/InputSliderBlock.hh"
 #include "objects/SensorBlocks/TextSensorBlock.hh"
 #include "sensors/Sensor.hh"
 #include "sensors/MPU6050Sensor.hh"
@@ -72,6 +73,10 @@ void setup() {
   Groups.back()->blocks.push_back(new TextSensorBlock<GyroAcceleratorDataStruct>(2, 0, {}, "Movement",movementSensor));
   Groups.push_back(new GroupBlock(3,action));
   Groups.back()->blocks.push_back(new ActionBlock(3, 0, {15},"Action"));
+
+  Groups.push_back(new GroupBlock(4,inputSlider));
+  Groups.back()->blocks.push_back(new InputSliderBlock(4, 0, {17},"Servo", 180));
+
   Serial.println();
   Serial.print("Connecting to ");
   Serial.println(ssid);
@@ -141,6 +146,13 @@ void setup() {
               if (name.equalsIgnoreCase(block->name)) {
                 SliderBlock* sb = static_cast<SliderBlock*>(block);
                 if (sb) sb->setValue(value);
+              }
+            }
+          } else if (group->type == inputSlider) {
+            for (auto block : group->blocks) {
+              if (name.equalsIgnoreCase(block->name)) {
+                InputSliderBlock* isb = static_cast<InputSliderBlock*>(block);
+                if (isb) isb->setValue(value);
               }
             }
           }

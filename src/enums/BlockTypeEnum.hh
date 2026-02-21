@@ -7,5 +7,6 @@ nav,
 status,
 action,
 virt,
-slider
+slider,
+inputSlider
 };

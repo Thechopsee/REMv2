@@ -1,8 +1,10 @@
 #include "Renderer.hh"
 #include <string>
+#include "../objects/ControllBlocks/InputSliderBlock.hh"
+
 void Renderer::drawBlock(GroupBlock *bl,Print &client)
 {
-  if(bl->type==controll || bl->type==status || bl->type==slider)
+  if(bl->type==controll || bl->type==status || bl->type==slider || bl->type==action || bl->type==inputSlider)
   {
     client.println("<div class=\"Box\">");
     client.println("<div class=\"fake-border\">");
@@ -80,6 +82,52 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     slider.append("onchange=\"fetch('/control?name=' + this.id + '&value=' + this.value)\">"
                    "</div>");
     client.println(slider.c_str());
+    client.println("</div>");
+  }
+  else if(type==inputSlider)
+  {
+    InputSliderBlock* isb = static_cast<InputSliderBlock*>(cb);
+    client.println("<div class=\"controll-box\">");
+    std::string namee="<div class=\"textC\">";
+    namee.append(cb->name);
+    client.println(namee.c_str());
+
+    std::string status= "<div class=\"status-dot\">";
+    status.append(cb->actual_status);
+    status.append("</div></div>");
+    client.println(status.c_str());
+
+    client.println("<div class=\"button-line\">");
+
+    // Slider
+    client.print("<input type=\"range\" min=\"0\" max=\"");
+    client.print(isb->max_value);
+    client.print("\" value=\"");
+    client.print(cb->actual_status.c_str());
+    client.print("\" class=\"slider\" style=\"width:70%\" id=\"slider_");
+    client.print(cb->name);
+    client.print("\" oninput=\"document.getElementById('input_");
+    client.print(cb->name);
+    client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
+    client.print("onchange=\"fetch('/control?name=");
+    client.print(cb->name);
+    client.print("&value=' + this.value)\">");
+
+    // Input box
+    client.print("<input type=\"number\" min=\"0\" max=\"");
+    client.print(isb->max_value);
+    client.print("\" value=\"");
+    client.print(cb->actual_status.c_str());
+    client.print("\" style=\"width:25%\" id=\"input_");
+    client.print(cb->name);
+    client.print("\" oninput=\"document.getElementById('slider_");
+    client.print(cb->name);
+    client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
+    client.print("onchange=\"fetch('/control?name=");
+    client.print(cb->name);
+    client.print("&value=' + this.value)\">");
+
+    client.println("</div>");
     client.println("</div>");
   }
   else
