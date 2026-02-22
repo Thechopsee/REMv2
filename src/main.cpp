@@ -43,6 +43,26 @@ Renderer *rd;
 
 void setup() {
   Serial.begin(9600);
+  StorageService* storage = StorageService::getInstance(5);
+
+  if (!storage) {
+      Serial.println("StorageService cant be inicialized");
+      return;
+  }
+/*
+  bool success = storage->appendToFile("data", "Test data from REMv2");
+  if (success) {
+      Serial.println("Testdata writen");
+  } else {
+      Serial.println("error while testing data");
+  }
+
+  std::string content = storage->readFile("data");
+    if (!content.empty()) {
+        Serial.println("file content:");
+        Serial.println(content.c_str());
+    }
+        */
   
   pinMode(2, OUTPUT);
   delay(10);

@@ -1,7 +1,7 @@
 #include "MPU6050Sensor.hh"
 
-MPU6050Sensor::MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin, int sclPin)
-  : Sensor<GyroAcceleratorDataStruct>(name, updateInterval),
+MPU6050Sensor::MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin, int sclPin, bool enableLogging)
+  : Sensor<GyroAcceleratorDataStruct>(name, updateInterval, enableLogging),
     _sdaPin(sdaPin),
     _sclPin(sclPin),
     _mpu()
@@ -37,24 +37,21 @@ void MPU6050Sensor::Begin() {
   _mpu.CalibrateGyro(6);
 }
 
-void MPU6050Sensor::ReadValue() {
+void MPU6050Sensor::ReadValueInternal() {
   if (!_initialized) return;
 
-  if (millis() - lastUpdate >= updateInterval) {
-    int16_t ax, ay, az;
-    int16_t gx, gy, gz;
-    _mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+  int16_t ax, ay, az;
+  int16_t gx, gy, gz;
+  _mpu.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
 
-    char buf[128];
-    snprintf(buf, sizeof(buf),
-      "AX:%d AY:%d AZ:%d | GX:%d GY:%d GZ:%d",
-      ax, ay, az, gx, gy, gz
-    );
+  char buf[128];
+  snprintf(buf, sizeof(buf),
+    "AX:%d AY:%d AZ:%d | GX:%d GY:%d GZ:%d",
+    ax, ay, az, gx, gy, gz
+  );
 
-    lastValue = buf;
-    lastOriginalValue = {ax, ay, az, gx, gy, gz};
-    Serial.print("[MPU6050] New Update:");
-    Serial.println(lastValue.c_str());
-    lastUpdate = millis();
-  }
+  lastValue = buf;
+  lastOriginalValue = {ax, ay, az, gx, gy, gz};
+  Serial.print("[MPU6050] New Update:");
+  Serial.println(lastValue.c_str());
 }

@@ -6,9 +6,9 @@
 
 class MPU6050Sensor : public Sensor<GyroAcceleratorDataStruct> {
 public:
-  MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin = 21, int sclPin = 22);
+  MPU6050Sensor(std::string name, unsigned long updateInterval, int sdaPin = 21, int sclPin = 22, bool enableLogging = false);
   void Begin() override;
-  void ReadValue() override;
+  void ReadValueInternal() override;
 
 private:
   int _sdaPin;
