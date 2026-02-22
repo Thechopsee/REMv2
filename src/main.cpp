@@ -79,14 +79,16 @@ void setup() {
   Groups.back()->blocks.push_back(new OnOffBlock(0, 0, {16,13},"Pozition"));
   Groups.back()->blocks.push_back(new OnOffBlock(0, 1, {14},"Sto"));
   //Groups.back()->blocks.push_back(new OnOffBlock(0, 2, 1,"CABINLED"));
+  /*
   Groups.push_back(new GroupBlock(1,slider));
   Groups.back()->blocks.push_back(new SliderBlock(1, 0, {12},"Cabin"));
+  */
   //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
   Groups.push_back(new GroupBlock(2,status));
   Sensor<GyroAcceleratorDataStruct>* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
   Sensors.push_back(movementSensor);
 
-  movementSensor->SetOnDataChanged([&](int angle){
+  movementSensor->SetOnDataChanged([&](std::string angle){
       DataDrivenEvent::OnDataChanged(display, angle);
   });
 
@@ -94,8 +96,8 @@ void setup() {
   Groups.push_back(new GroupBlock(3,action));
   Groups.back()->blocks.push_back(new ActionBlock(3, 0, {15},"Action"));
 
-  Groups.push_back(new GroupBlock(4,inputSlider));
-  Groups.back()->blocks.push_back(new InputSliderBlock(4, 0, {17},"Servo", 180));
+  /*Groups.push_back(new GroupBlock(4,inputSlider));
+  Groups.back()->blocks.push_back(new InputSliderBlock(4, 0, {17},"Servo", 180));*/
 
   Serial.println();
   Serial.print("Connecting to ");

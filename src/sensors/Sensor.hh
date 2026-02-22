@@ -7,7 +7,7 @@
 template <typename T>
 class Sensor {
 public:
-  using OnDataChanged = std::function<void(int)>;
+  using OnDataChanged = std::function<void(std::string)>;
   Sensor(std::string name, unsigned long updateInterval, bool enableLogging = false);
   std::string name;
   T lastOriginalValue;

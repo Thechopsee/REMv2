@@ -24,6 +24,10 @@ void Sensor<T>::ReadValue() {
             LogSensorData(lastValue);
         }
         
+        if (onDataChanged) {
+            onDataChanged(lastValue); // TODO: Pass appropriate data/angle
+        }
+        
         lastUpdate = millis();
     }
 }
