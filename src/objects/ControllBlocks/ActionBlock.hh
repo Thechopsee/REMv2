@@ -16,4 +16,6 @@ class ActionBlock: public BasicBlock
     void resolveInput(String request);
     void update();
     int getValue();
+    bool isRunningAction() override;
+    void resetToDefault() override;
 };

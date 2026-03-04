@@ -137,6 +137,33 @@ void setup() {
   ElegantOTA.begin(&server);
   Serial.println("OTA Ready on /update");
 
+  server.on("/action", HTTP_GET, [](AsyncWebServerRequest *request)
+  {
+    if (request->hasParam("name") && request->hasParam("state")) {
+      String name  = request->getParam("name")->value();
+      String state = request->getParam("state")->value();
+
+      for (auto group : Groups) {
+        if (group->type == action) {
+          for (auto block : group->blocks) {
+            if (name.equalsIgnoreCase(block->name) && block->enabled) {
+                ActionBlock* ab = static_cast<ActionBlock*>(block);
+                if (ab) {
+                  if (state.equalsIgnoreCase("ON")) {
+                    ab->setPin(true);
+                  } else if (state.equalsIgnoreCase("OFF")) {
+                    ab->setPin(false);
+                  }
+                }
+            }
+          }
+        }
+      }
+      request->redirect("/");
+    } else {
+      request->send(400, "text/plain", "Missing parameters");
+    }
+  });
   
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
@@ -150,7 +177,7 @@ void setup() {
           for (auto block : group->blocks) {
             if (group->type == controll) {
               OnOffBlock* onoff = static_cast<OnOffBlock*>(block);
-              if (onoff && name.equalsIgnoreCase(onoff->name)) {
+              if (onoff && name.equalsIgnoreCase(onoff->name) && onoff->enabled) {
                 if (state.equalsIgnoreCase("ON")) {
                   onoff->setPin(true);
                 } else if (state.equalsIgnoreCase("OFF")) {
@@ -165,14 +192,14 @@ void setup() {
         for (auto group : Groups) {
           if (group->type == slider) {
             for (auto block : group->blocks) {
-              if (name.equalsIgnoreCase(block->name)) {
+              if (name.equalsIgnoreCase(block->name) && block->enabled) {
                 SliderBlock* sb = static_cast<SliderBlock*>(block);
                 if (sb) sb->setValue(value);
               }
             }
           } else if (group->type == inputSlider) {
             for (auto block : group->blocks) {
-              if (name.equalsIgnoreCase(block->name)) {
+              if (name.equalsIgnoreCase(block->name) && block->enabled) {
                 InputSliderBlock* isb = static_cast<InputSliderBlock*>(block);
                 if (isb) isb->setValue(value);
               }

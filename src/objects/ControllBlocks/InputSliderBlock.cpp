@@ -1,10 +1,11 @@
 #include "InputSliderBlock.hh"
 
-InputSliderBlock::InputSliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int max_val) : BasicBlock(id,blok_id,pins,name)
+InputSliderBlock::InputSliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int max_val, int default_val) : BasicBlock(id,blok_id,pins,name)
 {
-    this->current_value = 0;
+    this->defaultValue = default_val;
+    this->current_value = default_val;
     this->max_value = max_val;
-    this->actual_status = "0";
+    this->actual_status = std::to_string(default_val);
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
     }
@@ -34,4 +35,9 @@ void InputSliderBlock::resolveInput(String request)
 int InputSliderBlock::getValue()
 {
     return this->current_value;
+}
+
+void InputSliderBlock::resetToDefault()
+{
+    this->setValue(this->defaultValue);
 }

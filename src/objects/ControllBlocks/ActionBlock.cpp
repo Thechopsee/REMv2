@@ -1,4 +1,7 @@
 #include "ActionBlock.hh"
+#include "../GroupBlock.hh"
+
+extern std::vector<GroupBlock*> Groups;
 
 ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
 {
@@ -14,11 +17,40 @@ void ActionBlock::setPin(bool dat)
     {
         action->Run();
         this->actual_status="Running";
+
+        for (auto group : Groups) {
+            for (auto block : group->blocks) {
+                if (block != this && this->sharesPinsWith(block)) {
+                    block->resetToDefault();
+                    block->enabled = false;
+                }
+            }
+        }
     }
     else
     {
         action->Stop();
         this->actual_status="Stopped";
+
+        for (auto group : Groups) {
+            for (auto block : group->blocks) {
+                if (block != this && this->sharesPinsWith(block)) {
+                    bool stillConflict = false;
+                    for (auto g2 : Groups) {
+                        for (auto b2 : g2->blocks) {
+                            if (b2 != block && b2->isRunningAction() && b2->sharesPinsWith(block)) {
+                                stillConflict = true;
+                                break;
+                            }
+                        }
+                        if (stillConflict) break;
+                    }
+                    if (!stillConflict) {
+                        block->enabled = true;
+                    }
+                }
+            }
+        }
     }
 }
 void ActionBlock::update()
@@ -62,4 +94,13 @@ int ActionBlock::getValue()
   return 0;
 }
 
+bool ActionBlock::isRunningAction()
+{
+    return this->actual_status == "Running";
+}
+
+void ActionBlock::resetToDefault()
+{
+    this->setPin(false);
+}
 

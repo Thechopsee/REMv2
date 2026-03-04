@@ -65,4 +65,8 @@ int OnOffBlock::getValue()
   return this->current_value;
 }
 
+void OnOffBlock::resetToDefault()
+{
+    this->setPin(false);
+}
 

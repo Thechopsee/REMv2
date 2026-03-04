@@ -12,5 +12,6 @@ class OnOffBlock: public BasicBlock
     void resolveInput(String request);
     void update();
     int getValue();
+    void resetToDefault() override;
     
 };

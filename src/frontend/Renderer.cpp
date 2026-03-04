@@ -33,10 +33,14 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     std::string buttons="<div class=\"button-line\">"
                         "<a href=\"/control?name=";
     buttons.append(cb->name);
-    buttons.append("&state=ON\"><button class=\"on\">On</button></a>"
+    buttons.append("&state=ON\"><button class=\"on\" ");
+    if(!cb->enabled) buttons.append("disabled");
+    buttons.append(">On</button></a>"
                    "<a href=\"/control?name=");
     buttons.append(cb->name);
-    buttons.append("&state=OFF\"><button class=\"off\">Off</button></a></div>");
+    buttons.append("&state=OFF\"><button class=\"off\" ");
+    if(!cb->enabled) buttons.append("disabled");
+    buttons.append(">Off</button></a></div>");
     client.println(buttons.c_str()); 
     //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println("</div>");
@@ -54,10 +58,14 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     std::string buttons="<div class=\"button-line\">"
                         "<a href=\"/action?name=";
     buttons.append(cb->name);
-    buttons.append("&state=ON\"><button class=\"on\">On</button></a>"
+    buttons.append("&state=ON\"><button class=\"on\" ");
+    if(!cb->enabled) buttons.append("disabled");
+    buttons.append(">On</button></a>"
                    "<a href=\"/action?name=");
     buttons.append(cb->name);
-    buttons.append("&state=OFF\"><button class=\"off\">Off</button></a></div>");
+    buttons.append("&state=OFF\"><button class=\"off\" ");
+    if(!cb->enabled) buttons.append("disabled");
+    buttons.append(">Off</button></a></div>");
     client.println(buttons.c_str()); 
     //client.println("<div class=\"button-line\"><a href=\"LED_SEARCH=ON\"><button class=\"on\">On</button></a><a href=\"LED_SEARCH=OFF\"><button class=\"off\">Off</button></a></div>");
     client.println("</div>");
@@ -78,7 +86,8 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     slider.append(cb->actual_status);
     slider.append("\" class=\"slider\" id=\"");
     slider.append(cb->name);
-    slider.append("\" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
+    if(!cb->enabled) slider.append("\" disabled=\"true");
+    slider.append(" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
     slider.append("onchange=\"fetch('/control?name=' + this.id + '&value=' + this.value)\">"
                    "</div>");
     client.println(slider.c_str());
@@ -106,7 +115,8 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(cb->actual_status.c_str());
     client.print("\" class=\"slider\" style=\"width:70%\" id=\"slider_");
     client.print(cb->name);
-    client.print("\" oninput=\"document.getElementById('input_");
+    if(!cb->enabled) client.print("\" disabled=\"true");
+    client.print(" oninput=\"document.getElementById('input_");
     client.print(cb->name);
     client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
     client.print("onchange=\"fetch('/control?name=");
@@ -120,7 +130,8 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(cb->actual_status.c_str());
     client.print("\" style=\"width:25%\" id=\"input_");
     client.print(cb->name);
-    client.print("\" oninput=\"document.getElementById('slider_");
+    if(!cb->enabled) client.print("\" disabled=\"true");
+    client.print(" oninput=\"document.getElementById('slider_");
     client.print(cb->name);
     client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
     client.print("onchange=\"fetch('/control?name=");

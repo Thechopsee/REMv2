@@ -1,9 +1,10 @@
 #include "SliderBlock.hh"
 
-SliderBlock::SliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
+SliderBlock::SliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int defaultValue) : BasicBlock(id,blok_id,pins,name)
 {
-    this->current_value = 0;
-    this->actual_status = "0";
+    this->defaultValue = defaultValue;
+    this->current_value = defaultValue;
+    this->actual_status = std::to_string(defaultValue);
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
     }
@@ -33,4 +34,9 @@ void SliderBlock::resolveInput(String request)
 int SliderBlock::getValue()
 {
     return this->current_value;
+}
+
+void SliderBlock::resetToDefault()
+{
+    this->setValue(this->defaultValue);
 }
