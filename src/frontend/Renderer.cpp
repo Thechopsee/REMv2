@@ -43,7 +43,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
   }
   else if(type==action)
   {
-    client.println("<div class=\"action-box\">");
+    client.println("<div class=\"controll-box\">");
     std::string namee="<div class=\"textC\">";
     namee.append(cb->name);
     client.println(namee.c_str());
@@ -234,7 +234,8 @@ void Renderer::drawNew(std::vector<GroupBlock*>blocks,Print &client)
     client.println("</head>");
     //////////////////////body////////////////////
     client.println("<body onload=start()>");
-    client.println("<h1>REM-Boat</h1>");
+    client.println("<h1>REM</h1>");
+    client.println("<h3>RemoteEffectManager</h3>");
     client.println("<div class=\"container\">");
     for(int i=0;i<blocks.size();i++)
     {

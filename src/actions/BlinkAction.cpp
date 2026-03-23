@@ -4,12 +4,20 @@ class BlinkAction : public Action {
 protected:
     void ActionBody() override {
         while (!StopRequested()) {
-        for (int i = 0; i < 5; i++) {
-            digitalWrite(2, HIGH);
+            std::vector<int> pins = GetPins();
+                if (pins.empty()) {
+                    return;
+                }
+            for (int pin : pins) {
+                digitalWrite(pin, HIGH);
+                
+            }
             vTaskDelay(500 / portTICK_PERIOD_MS);
-            digitalWrite(2, LOW);
+            for (int pin : pins) {
+                digitalWrite(pin, LOW);
+            }
             vTaskDelay(500 / portTICK_PERIOD_MS);
-        }
+            if (StopRequested()) return;
     }
     }
 };

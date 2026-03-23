@@ -29,26 +29,27 @@
 
 #include "events/DataDrivenEvent.hh"
 #include "common/DataStruct/GyroAcceleratorDataStruct.hh"
+#include "modelprofiles/modelprovider.hh"
 
 AsyncWebServer server(80);
 
-std::vector<GroupBlock*> Groups;
+
 std::vector<Sensor<GyroAcceleratorDataStruct>*> Sensors;
 UniversalDisplay* display;
 GpsService* gpsService;
-
-
+std::vector<GroupBlock*> Groups;
+ModelProvider* modelProvider;
 
 Renderer *rd;
 
 void setup() {
   Serial.begin(9600);
-  StorageService* storage = StorageService::getInstance(5);
+  /*StorageService* storage = StorageService::getInstance(5);
 
   if (!storage) {
       Serial.println("StorageService cant be inicialized");
       return;
-  }
+  }*/
 /*
   bool success = storage->appendToFile("data", "Test data from REMv2");
   if (success) {
@@ -68,22 +69,17 @@ void setup() {
   delay(10);
 
   rd=new Renderer();
-  gpsService=new GpsService(27,26);
+  /*gpsService=new GpsService(27,26);
   gpsService->begin();
 
   display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
   display->drawBitmap(boat);
-
-
-  Groups.push_back(new GroupBlock(0,controll));
-  Groups.back()->blocks.push_back(new OnOffBlock(0, 0, {16,13},"Pozition"));
-  Groups.back()->blocks.push_back(new OnOffBlock(0, 1, {14},"Sto"));
-  //Groups.back()->blocks.push_back(new OnOffBlock(0, 2, 1,"CABINLED"));
-  /*
-  Groups.push_back(new GroupBlock(1,slider));
-  Groups.back()->blocks.push_back(new SliderBlock(1, 0, {12},"Cabin"));
   */
-  //Groups.back()->blocks.push_back(new OnOffBlock(1, 1, 13,"Red"));
+
+  modelProvider = new ModelProvider();
+  Groups = modelProvider->GetGroups();
+
+  /*
   Groups.push_back(new GroupBlock(2,status));
   Sensor<GyroAcceleratorDataStruct>* movementSensor=new MPU6050Sensor("Movement",1000,33,32);
   Sensors.push_back(movementSensor);
@@ -91,10 +87,11 @@ void setup() {
   movementSensor->SetOnDataChanged([&](std::string angle){
       DataDrivenEvent::OnDataChanged(display, angle);
   });
+  */
 
-  Groups.back()->blocks.push_back(new TextSensorBlock<GyroAcceleratorDataStruct>(2, 0, {}, "Movement",movementSensor));
+  /*Groups.back()->blocks.push_back(new TextSensorBlock<GyroAcceleratorDataStruct>(2, 0, {}, "Movement",movementSensor));
   Groups.push_back(new GroupBlock(3,action));
-  Groups.back()->blocks.push_back(new ActionBlock(3, 0, {15},"Action"));
+  Groups.back()->blocks.push_back(new ActionBlock(3, 0, {15},"Action"));*/
 
   /*Groups.push_back(new GroupBlock(4,inputSlider));
   Groups.back()->blocks.push_back(new InputSliderBlock(4, 0, {17},"Servo", 180));*/
@@ -184,6 +181,40 @@ void setup() {
     } else {
       request->send(400, "text/plain", "Missing parameters");
     }
+  });
+
+  server.on("/action", HTTP_GET, [](AsyncWebServerRequest *request)
+  {
+    if (!request->hasParam("name") || !request->hasParam("state")) {
+      request->send(400, "text/plain", "Missing parameters");
+      return;
+    }
+
+    String name = request->getParam("name")->value();
+    String state = request->getParam("state")->value();
+
+    for (auto group : Groups) {
+      if (group->type != action) {
+        continue;
+      }
+
+      for (auto block : group->blocks) {
+        if (!name.equalsIgnoreCase(block->name)) {
+          continue;
+        }
+
+        ActionBlock* actionBlock = static_cast<ActionBlock*>(block);
+        if (actionBlock != nullptr) {
+          if (state.equalsIgnoreCase("ON")) {
+            actionBlock->setPin(true);
+          } else if (state.equalsIgnoreCase("OFF")) {
+            actionBlock->setPin(false);
+          }
+        }
+      }
+    }
+
+    request->redirect("/");
   });
 
   server.on("/status", HTTP_GET, [](AsyncWebServerRequest *request) 
