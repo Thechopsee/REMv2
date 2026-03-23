@@ -40,6 +40,14 @@ bool Action::StopRequested() const {
     return stopRequested;
 }
 
+void Action::SetPins(const std::vector<int>& pins) {
+    this->pins = pins;
+}
+
+const std::vector<int>& Action::GetPins() const {
+    return pins;
+}
+
 bool Action::GetStatus() {
     return inProgress;
 }

@@ -12,6 +12,7 @@ class ActionBlock: public BasicBlock
      Action* action;
   public:
     ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name);
+    ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, Action* action);
     void setPin(bool dat);
     void resolveInput(String request);
     void update();

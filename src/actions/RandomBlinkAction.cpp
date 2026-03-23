@@ -8,7 +8,10 @@
 class RandomBlinkAction : public Action {
 protected:
     void ActionBody() override {
-        std::vector<int> pins = {2, 4, 5, 18, 19};
+        std::vector<int> pins = GetPins();
+        if (pins.empty()) {
+            return;
+        }
 
         randomSeed(esp_random());
 

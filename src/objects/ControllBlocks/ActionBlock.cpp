@@ -1,12 +1,19 @@
 #include "ActionBlock.hh"
 
-ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
+ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name)
+    : ActionBlock(id, blok_id, pins, name, nullptr)
+{
+}
+
+ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, Action* action)
+    : BasicBlock(id,blok_id,pins,name)
 {
     this->actual_status="Stopped";
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
     }
-    this->action=new Action();
+    this->action = (action != nullptr) ? action : new Action();
+    this->action->SetPins(this->pins);
 }
 void ActionBlock::setPin(bool dat)
 {
