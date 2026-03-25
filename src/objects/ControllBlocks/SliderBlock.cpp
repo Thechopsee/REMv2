@@ -35,9 +35,9 @@ void SliderBlock::resetToDefault()
     this->enabled = false;
     this->current_value = this->default_value;
     this->actual_status = std::to_string(this->default_value);
-    int pwmValue = map(this->default_value, 0, 100, 0, 255);
     for (int p : this->pins) {
-        analogWrite(p, pwmValue);
+        pinMode(p, OUTPUT);
+        digitalWrite(p, this->default_value != 0 ? HIGH : LOW);
     }
 }
 

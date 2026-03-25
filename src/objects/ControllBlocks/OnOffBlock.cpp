@@ -17,6 +17,7 @@ void OnOffBlock::setPin(bool dat)
     if(dat)
     {
         for (int p : this->pins) {
+        pinMode(p, OUTPUT);
         digitalWrite(p, HIGH);
         }
         this->actual_status="🟢";
@@ -24,6 +25,7 @@ void OnOffBlock::setPin(bool dat)
     else
     {
         for (int p : this->pins) {
+        pinMode(p, OUTPUT);
         digitalWrite(p, LOW);
         }
         this->actual_status="🔴";
@@ -54,6 +56,7 @@ void OnOffBlock::resetToDefault()
     this->current_value = this->default_value;
     this->actual_status = (this->default_value != 0) ? "🟢" : "🔴";
     for (int p : this->pins) {
+        pinMode(p, OUTPUT);
         digitalWrite(p, this->default_value);
     }
 }

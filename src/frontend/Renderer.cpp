@@ -76,7 +76,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     std::string slider="<div class=\"button-line\">"
                        "<input type=\"range\" min=\"0\" max=\"100\" value=\"";
     slider.append(cb->actual_status);
-    slider.append("\" class=\"slider\" id=\"");
+    slider.append("\" class=\"slider\" autocomplete=\"off\" id=\"");
     slider.append(cb->name);
     slider.append("\" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
     slider.append("onchange=\"fetch('/control?name=' + this.id + '&value=' + this.value)\">"
@@ -104,7 +104,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(isb->max_value);
     client.print("\" value=\"");
     client.print(cb->actual_status.c_str());
-    client.print("\" class=\"slider\" style=\"width:70%\" id=\"slider_");
+    client.print("\" class=\"slider\" style=\"width:70%\" autocomplete=\"off\" id=\"slider_");
     client.print(cb->name);
     client.print("\" oninput=\"document.getElementById('input_");
     client.print(cb->name);
@@ -118,7 +118,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(isb->max_value);
     client.print("\" value=\"");
     client.print(cb->actual_status.c_str());
-    client.print("\" style=\"width:25%\" id=\"input_");
+    client.print("\" style=\"width:25%\" autocomplete=\"off\" id=\"input_");
     client.print(cb->name);
     client.print("\" oninput=\"document.getElementById('slider_");
     client.print(cb->name);
