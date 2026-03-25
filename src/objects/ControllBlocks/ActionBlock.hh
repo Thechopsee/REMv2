@@ -16,5 +16,6 @@ class ActionBlock: public BasicBlock
     void setPin(bool dat);
     void resolveInput(String request);
     void update();
+    void resetToDefault();
     int getValue();
 };

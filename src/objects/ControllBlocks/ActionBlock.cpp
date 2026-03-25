@@ -17,6 +17,7 @@ ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, cons
 }
 void ActionBlock::setPin(bool dat)
 {
+    this->enabled = true;
     if(dat)
     {
         action->Run();
@@ -44,6 +45,12 @@ void ActionBlock::update()
         digitalWrite(p,value);
     }*/
     
+}
+void ActionBlock::resetToDefault()
+{
+    this->enabled = false;
+    action->Stop();
+    this->actual_status="Stopped";
 }
 void ActionBlock::resolveInput(String request)
 {

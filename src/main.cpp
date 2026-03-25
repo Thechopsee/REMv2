@@ -42,6 +42,29 @@ ModelProvider* modelProvider;
 
 Renderer *rd;
 
+void handleConflict(BasicBlock* activeBlock) {
+  for (auto group : Groups) {
+    for (auto block : group->blocks) {
+      if (block == activeBlock) continue;
+
+      bool conflict = false;
+      for (int activePin : activeBlock->pins) {
+        for (int blockPin : block->pins) {
+          if (activePin == blockPin) {
+            conflict = true;
+            break;
+          }
+        }
+        if (conflict) break;
+      }
+
+      if (conflict) {
+        block->resetToDefault();
+      }
+    }
+  }
+}
+
 void setup() {
   Serial.begin(9600);
   /*StorageService* storage = StorageService::getInstance(5);
@@ -148,6 +171,7 @@ void setup() {
             if (group->type == controll) {
               OnOffBlock* onoff = static_cast<OnOffBlock*>(block);
               if (onoff && name.equalsIgnoreCase(onoff->name)) {
+                handleConflict(onoff);
                 if (state.equalsIgnoreCase("ON")) {
                   onoff->setPin(true);
                 } else if (state.equalsIgnoreCase("OFF")) {
@@ -164,14 +188,20 @@ void setup() {
             for (auto block : group->blocks) {
               if (name.equalsIgnoreCase(block->name)) {
                 SliderBlock* sb = static_cast<SliderBlock*>(block);
-                if (sb) sb->setValue(value);
+                if (sb) {
+                  handleConflict(sb);
+                  sb->setValue(value);
+                }
               }
             }
           } else if (group->type == inputSlider) {
             for (auto block : group->blocks) {
               if (name.equalsIgnoreCase(block->name)) {
                 InputSliderBlock* isb = static_cast<InputSliderBlock*>(block);
-                if (isb) isb->setValue(value);
+                if (isb) {
+                  handleConflict(isb);
+                  isb->setValue(value);
+                }
               }
             }
           }
@@ -205,6 +235,7 @@ void setup() {
 
         ActionBlock* actionBlock = static_cast<ActionBlock*>(block);
         if (actionBlock != nullptr) {
+          handleConflict(actionBlock);
           if (state.equalsIgnoreCase("ON")) {
             actionBlock->setPin(true);
           } else if (state.equalsIgnoreCase("OFF")) {

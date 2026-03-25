@@ -1,14 +1,19 @@
 #include "OnOffBlock.hh"
 
-OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
+OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int default_value) : BasicBlock(id,blok_id,pins,name)
 {
-    this->actual_status="🔴";
+    this->default_value = default_value;
+    this->current_value = default_value;
+    this->actual_status = (default_value != 0) ? "🟢" : "🔴";
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
+        digitalWrite(p, default_value);
     }
 }
 void OnOffBlock::setPin(bool dat)
 {
+    this->enabled = true;
+    this->current_value = dat ? HIGH : LOW;
     if(dat)
     {
         for (int p : this->pins) {
@@ -26,6 +31,8 @@ void OnOffBlock::setPin(bool dat)
 }
 void OnOffBlock::update()
 {
+    if (!this->enabled) return;
+
     int value=current_value;
     if(value!=0)
     {
@@ -40,6 +47,15 @@ void OnOffBlock::update()
         digitalWrite(p,value);
     }
     
+}
+void OnOffBlock::resetToDefault()
+{
+    this->enabled = false;
+    this->current_value = this->default_value;
+    this->actual_status = (this->default_value != 0) ? "🟢" : "🔴";
+    for (int p : this->pins) {
+        digitalWrite(p, this->default_value);
+    }
 }
 void OnOffBlock::resolveInput(String request)
 {
