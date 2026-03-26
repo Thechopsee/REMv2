@@ -78,7 +78,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     slider.append(cb->actual_status);
     slider.append("\" class=\"slider\" id=\"");
     slider.append(cb->name);
-    slider.append("\" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
+    slider.append("\" autocomplete=\"off\" oninput=\"this.parentElement.previousElementSibling.lastElementChild.innerText = this.value + '%'\" ");
     slider.append("onchange=\"fetch('/control?name=' + this.id + '&value=' + this.value)\">"
                    "</div>");
     client.println(slider.c_str());
@@ -106,7 +106,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(cb->actual_status.c_str());
     client.print("\" class=\"slider\" style=\"width:70%\" id=\"slider_");
     client.print(cb->name);
-    client.print("\" oninput=\"document.getElementById('input_");
+    client.print("\" autocomplete=\"off\" oninput=\"document.getElementById('input_");
     client.print(cb->name);
     client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
     client.print("onchange=\"fetch('/control?name=");
@@ -120,7 +120,7 @@ void Renderer::drawSmallBlock(BasicBlock* cb,Print &client,BlockTypeEnum type)
     client.print(cb->actual_status.c_str());
     client.print("\" style=\"width:25%\" id=\"input_");
     client.print(cb->name);
-    client.print("\" oninput=\"document.getElementById('slider_");
+    client.print("\" autocomplete=\"off\" oninput=\"document.getElementById('slider_");
     client.print(cb->name);
     client.print("').value = this.value; this.parentElement.previousElementSibling.lastElementChild.innerText = this.value\" ");
     client.print("onchange=\"fetch('/control?name=");
