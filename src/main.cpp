@@ -142,6 +142,7 @@ void setup() {
 
       if (request->hasParam("state")) {
         String state = request->getParam("state")->value();
+        Serial.print("Control: name="); Serial.print(name); Serial.print(", state="); Serial.println(state);
 
         for (auto group : Groups) {
           for (auto block : group->blocks) {
@@ -159,6 +160,7 @@ void setup() {
         }
       } else if (request->hasParam("value")) {
         int value = request->getParam("value")->value().toInt();
+        Serial.print("Control: name="); Serial.print(name); Serial.print(", value="); Serial.println(value);
         for (auto group : Groups) {
           if (group->type == slider) {
             for (auto block : group->blocks) {
@@ -192,6 +194,7 @@ void setup() {
 
     String name = request->getParam("name")->value();
     String state = request->getParam("state")->value();
+    Serial.print("Action: name="); Serial.print(name); Serial.print(", state="); Serial.println(state);
 
     for (auto group : Groups) {
       if (group->type != action) {

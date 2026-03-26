@@ -19,11 +19,17 @@ void ActionBlock::setPin(bool dat)
 {
     if(dat)
     {
+        for (int p : this->pins) {
+            pinMode(p, OUTPUT);
+        }
         action->Run();
         this->actual_status="Running";
     }
     else
     {
+        for (int p : this->pins) {
+            pinMode(p, OUTPUT);
+        }
         action->Stop();
         this->actual_status="Stopped";
     }
