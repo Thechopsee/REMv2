@@ -12,14 +12,16 @@ void OnOffBlock::setPin(bool dat)
     if(dat)
     {
         for (int p : this->pins) {
-        digitalWrite(p, HIGH);
+            pinMode(p, OUTPUT);
+            digitalWrite(p, HIGH);
         }
         this->actual_status="🟢";
     }
     else
     {
         for (int p : this->pins) {
-        digitalWrite(p, LOW);
+            pinMode(p, OUTPUT);
+            digitalWrite(p, LOW);
         }
         this->actual_status="🔴";
     }
