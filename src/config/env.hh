@@ -2,6 +2,6 @@
 /// CZ timezone 
 #define TZ_INFO "CET-1CEST,M3.5.0/2,M10.5.0/3"
 
-#define HOSTNAME "modelname"
+#define HOSTNAME "rcbenchy"
 //const char* hostName = "modelname";
 
