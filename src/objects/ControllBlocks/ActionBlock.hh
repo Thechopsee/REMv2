@@ -17,4 +17,5 @@ class ActionBlock: public BasicBlock
     void resolveInput(String request);
     void update();
     int getValue();
+    const char* getActionTypeName() const;
 };

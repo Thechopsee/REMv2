@@ -35,6 +35,19 @@ bool StorageService::appendToFile(const std::string &name, const std::string &da
     return true;
 }
 
+bool StorageService::writeFile(const std::string &name, const std::string &data) {
+    std::string fileName = "/" + name + ".txt";
+    File file = SD.open(fileName.c_str(), FILE_WRITE);
+    if (!file) {
+        Serial.println("Opening file error");
+        Serial.println(fileName.c_str());
+        return false;
+    }
+    file.print(data.c_str());
+    file.close();
+    return true;
+}
+
 std::string StorageService::readFile(const std::string &name) {
     std::string fileName = "/" + name + ".txt";
     File file = SD.open(fileName.c_str());

@@ -30,6 +30,7 @@
 #include "events/DataDrivenEvent.hh"
 #include "common/DataStruct/GyroAcceleratorDataStruct.hh"
 #include "modelprofiles/modelprovider.hh"
+#include "modelprofiles/ProfilePrettyPrinter.hh"
 
 AsyncWebServer server(80);
 
@@ -39,6 +40,7 @@ UniversalDisplay* display;
 GpsService* gpsService;
 std::vector<GroupBlock*> Groups;
 ModelProvider* modelProvider;
+StorageService* storageService;
 
 Renderer *rd;
 
@@ -75,6 +77,8 @@ void setup() {
   display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
   display->drawBitmap(boat);
   */
+
+  storageService = StorageService::getInstance(5);
 
   modelProvider = new ModelProvider();
   Groups = modelProvider->GetGroups();
@@ -134,7 +138,51 @@ void setup() {
   ElegantOTA.begin(&server);
   Serial.println("OTA Ready on /update");
 
-  
+  // GET /model-profile — vrátí aktuální profil jako JSON
+  server.on("/model-profile", HTTP_GET, [](AsyncWebServerRequest *request) {
+    std::string json = ProfilePrettyPrinter::serialize(modelProvider->GetGroups());
+    request->send(200, "application/json", json.c_str());
+  });
+
+  // POST /model-profile — nahraje nový profil z těla požadavku
+  server.onRequestBody([](AsyncWebServerRequest *request, uint8_t *data, size_t len, size_t index, size_t total) {
+    if (request->url() != "/model-profile" || request->method() != HTTP_POST) {
+      return;
+    }
+
+    if (len == 0) {
+      request->send(400, "text/plain", "Missing or empty body");
+      return;
+    }
+
+    std::string body(reinterpret_cast<const char*>(data), len);
+
+    std::string error = modelProvider->LoadFromJson(body);
+    if (!error.empty()) {
+      request->send(400, "text/plain", error.c_str());
+      return;
+    }
+
+    // Aktualizovat lokální referenci na skupiny
+    Groups = modelProvider->GetGroups();
+
+    // Volitelná persistence na SD kartě
+    if (request->hasParam("persist") && request->getParam("persist")->value() == "true") {
+      if (storageService != nullptr) {
+        bool written = storageService->writeFile("model-profile", body);
+        if (!written) {
+          request->send(200, "text/plain", "Profile applied in memory. SD write failed.");
+          return;
+        }
+      } else {
+        request->send(200, "text/plain", "Profile applied in memory. SD write failed.");
+        return;
+      }
+    }
+
+    request->send(200, "text/plain", "Profile applied successfully.");
+  });
+
   server.on("/control", HTTP_GET, [](AsyncWebServerRequest *request) 
   {
     if (request->hasParam("name")) {

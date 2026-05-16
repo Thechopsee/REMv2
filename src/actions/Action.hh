@@ -23,4 +23,5 @@ public:
     void Stop();        
     bool GetStatus();   
     void SetPins(const std::vector<int>& pins);
+    virtual const char* getTypeName() const { return "Action"; }
 };

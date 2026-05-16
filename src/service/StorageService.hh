@@ -19,6 +19,7 @@ public:
     bool begin();
     
     bool appendToFile(const std::string &name, const std::string &data);
+    bool writeFile(const std::string &name, const std::string &data);
     std::string readFile(const std::string &name);
 };
 

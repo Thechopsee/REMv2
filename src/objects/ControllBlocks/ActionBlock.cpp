@@ -75,4 +75,12 @@ int ActionBlock::getValue()
   return 0;
 }
 
+const char* ActionBlock::getActionTypeName() const
+{
+    if (action != nullptr) {
+        return action->getTypeName();
+    }
+    return "Action";
+}
+
 

@@ -1,22 +1,17 @@
-#pragma once
-#include <vector>
+#include "LinearBlinkAction.hh"
+#include <Arduino.h>
 
-#include "Action.hh"
-
-class LinearBlinkAction : public Action {
-protected:
-    void ActionBody() override {
-        const std::vector<int>& pins = GetPins();
-        if (pins.empty()) {
-            return;
-        }
-        while (!StopRequested()) {
-            for (int pin : pins) {
-                digitalWrite(pin, HIGH);
-                vTaskDelay(500 / portTICK_PERIOD_MS);
-                digitalWrite(pin, LOW);
-                vTaskDelay(500 / portTICK_PERIOD_MS);
-            }
+void LinearBlinkAction::ActionBody() {
+    const std::vector<int>& pins = GetPins();
+    if (pins.empty()) {
+        return;
+    }
+    while (!StopRequested()) {
+        for (int pin : pins) {
+            digitalWrite(pin, HIGH);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
+            digitalWrite(pin, LOW);
+            vTaskDelay(500 / portTICK_PERIOD_MS);
         }
     }
-};
+}
