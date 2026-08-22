@@ -8,6 +8,7 @@
 
 #include "config/secret.hh"
 #include "config/env.hh"
+#include <U8g2lib.h>
 #include "objects/GroupBlock.hh"
 #include "objects/BasicBlock.hh"
 #include "frontend/Renderer.hh"
@@ -44,7 +45,11 @@ Renderer *rd;
 
 void setup() {
   Serial.begin(9600);
-  /*StorageService* storage = StorageService::getInstance(5);
+
+  pinMode(2, OUTPUT);
+  delay(10);
+
+ /*StorageService* storage = StorageService::getInstance(5);
 
   if (!storage) {
       Serial.println("StorageService cant be inicialized");
@@ -68,13 +73,21 @@ void setup() {
   pinMode(2, OUTPUT);
   delay(10);
 
+  //Wire.begin(DISPLAY_SDA, DISPLAY_SCL);
+  delay(200);
+
   rd=new Renderer();
   /*gpsService=new GpsService(27,26);
-  gpsService->begin();
+  gpsService->begin();*/
 
-  display = new UniversalDisplay(DisplayTypeEnum::ZeroFortyTwo72X40);
-  display->drawBitmap(boat);
-  */
+  display = new UniversalDisplay(
+      DisplayTypeEnum::AdafruitSSD1306_64X32,
+      DISPLAY_SDA,
+      DISPLAY_SCL,
+      DISPLAY_RESET
+  );
+  display->write("REMv2");
+
 
   modelProvider = new ModelProvider();
   Groups = modelProvider->GetGroups();
@@ -115,6 +128,8 @@ void setup() {
   Serial.print("http://");
   Serial.print(WiFi.localIP());
   Serial.println("/");
+
+  display->write(WiFi.localIP().toString().c_str());
 
   if(!MDNS.begin(HOSTNAME))
   {
@@ -270,4 +285,3 @@ void loop()
   ElegantOTA.loop();
   delay(10);
 }
-

@@ -4,11 +4,11 @@
 #include <Arduino.h>
 #include <string>
 
-class ZeroFortyTwo : public DisplayBridge
+class AdafruitSSD1306_64x32 : public DisplayBridge
 {
 public:
-    U8G2_SSD1306_96X40_F_HW_I2C u8g2;
-    ZeroFortyTwo(int width, int height, int sda, int scl, int reset = U8X8_PIN_NONE);
+    U8G2_SSD1306_64X32_1F_F_HW_I2C u8g2;
+    AdafruitSSD1306_64x32(int width, int height, int sda, int scl, int reset = U8X8_PIN_NONE);
 
     void clear() override;
     void write(std::string text) override;

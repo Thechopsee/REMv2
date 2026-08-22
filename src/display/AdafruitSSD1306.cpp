@@ -1,7 +1,7 @@
 #include "AdafruitSSD1306.hh"
 
-AdafruitSSD1306::AdafruitSSD1306(int width, int height)
-: u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE)
+AdafruitSSD1306::AdafruitSSD1306(int width, int height, int sda, int scl, int reset)
+: u8g2(U8G2_R0, reset, scl, sda)
 {
     u8g2.begin();
     this->widthInPixels = width;

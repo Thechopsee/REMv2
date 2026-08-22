@@ -8,7 +8,7 @@ class AdafruitSSD1306 : public DisplayBridge
 {
 public:
     U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2;
-    AdafruitSSD1306(int width, int height);
+    AdafruitSSD1306(int width, int height, int sda, int scl, int reset = U8X8_PIN_NONE);
 
     void clear() override;
     void write(std::string text) override;

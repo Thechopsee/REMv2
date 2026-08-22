@@ -10,7 +10,7 @@ MPU6050Sensor::MPU6050Sensor(std::string name, unsigned long updateInterval, int
 void MPU6050Sensor::Begin() {
   Serial.println("[MPU6050] Initializing...");
 
-  Wire.begin();
+  Wire.begin(_sdaPin, _sclPin);
   delay(200);
 
   Serial.println("Scanning I2C bus...");

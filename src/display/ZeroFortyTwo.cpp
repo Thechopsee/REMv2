@@ -1,7 +1,7 @@
 #include "ZeroFortyTwo.hh"
 
-ZeroFortyTwo::ZeroFortyTwo(int width, int height)
-: u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE)
+ZeroFortyTwo::ZeroFortyTwo(int width, int height, int sda, int scl, int reset)
+: u8g2(U8G2_R0, reset, scl, sda)
 {
     u8g2.begin();
     this->widthInPixels=width;
