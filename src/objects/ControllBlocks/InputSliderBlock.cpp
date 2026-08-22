@@ -1,6 +1,6 @@
 #include "InputSliderBlock.hh"
 
-InputSliderBlock::InputSliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int max_val) : BasicBlock(id,blok_id,pins,name)
+InputSliderBlock::InputSliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int max_val, int default_value) : BasicBlock(id,blok_id,pins,name)
 {
     this->current_value = 0;
     this->max_value = max_val;
@@ -8,6 +8,7 @@ InputSliderBlock::InputSliderBlock(int id, int blok_id, const std::vector<int>& 
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
     }
+    this->setValue(default_value);
 }
 
 void InputSliderBlock::setValue(int val)

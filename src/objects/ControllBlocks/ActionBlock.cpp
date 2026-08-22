@@ -5,7 +5,7 @@ ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, cons
 {
 }
 
-ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, Action* action)
+ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, Action* action, bool default_state)
     : BasicBlock(id,blok_id,pins,name)
 {
     this->actual_status="Stopped";
@@ -14,6 +14,9 @@ ActionBlock::ActionBlock(int id, int blok_id, const std::vector<int>& pins, cons
     }
     this->action = (action != nullptr) ? action : new Action();
     this->action->SetPins(this->pins);
+    if (default_state) {
+        this->setPin(true);
+    }
 }
 void ActionBlock::setPin(bool dat)
 {

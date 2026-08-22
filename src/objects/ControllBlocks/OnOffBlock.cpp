@@ -1,10 +1,14 @@
 #include "OnOffBlock.hh"
 
-OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
+OnOffBlock::OnOffBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, bool default_state) : BasicBlock(id,blok_id,pins,name)
 {
     this->actual_status="🔴";
+    this->current_value = 0;
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
+    }
+    if (default_state) {
+        this->setPin(true);
     }
 }
 void OnOffBlock::setPin(bool dat)

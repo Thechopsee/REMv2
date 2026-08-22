@@ -1,12 +1,13 @@
 #include "SliderBlock.hh"
 
-SliderBlock::SliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name) : BasicBlock(id,blok_id,pins,name)
+SliderBlock::SliderBlock(int id, int blok_id, const std::vector<int>& pins, const char* name, int default_value) : BasicBlock(id,blok_id,pins,name)
 {
     this->current_value = 0;
     this->actual_status = "0";
     for (int p : this->pins) {
         pinMode(p, OUTPUT);
     }
+    this->setValue(default_value);
 }
 
 void SliderBlock::setValue(int val)
